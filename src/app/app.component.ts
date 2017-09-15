@@ -1,22 +1,13 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 
-import { Hero } from './hero';
+import {Hero} from './hero';
+import { HeroService } from './hero.service';
 
-const HEROES: Hero[] = [
-  { id: 1, name: 'Mr. Handsome' },
-  { id: 2, name: 'Spider Man' },
-  { id: 3, name: 'Super Man' },
-  { id: 4, name: 'Captain America' },
-  { id: 5, name: 'X-men' },
-  { id: 6, name: 'Bat Man' },
-  { id: 7, name: 'Wonder Woman' },
-  { id: 8, name: 'Ben 10' },
-  { id: 9, name: 'Bimal Parajuli' },
-  { id: 10, name: 'Julia Chen' }
-];
+
 
 @Component({
   selector: 'my-app',
+  providers: [HeroService],
   template: `
     <h1>{{title}}</h1>
     <h2>My Heroes</h2>
@@ -84,12 +75,25 @@ const HEROES: Hero[] = [
     }
   `]
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'Tour of Heroes';
-  heroes = HEROES;
+  heroes: Hero[];
   selectedHero: Hero;
 
+  constructor(private heroService: HeroService){}
+
+  getHeroes():void{
+    this.heroService.getHeroesSlowly().then(heroes=>this.heroes = heroes);
+  }
+
+  ngOnInit():void{
+    this.getHeroes();
+  }
   onSelect(hero: Hero): void {
     this.selectedHero = hero;
   }
 }
+
+// ngOnInit lifecycle hook to get the hero data when AppComponent activates
+// HeroService as a provider for AppComponent
+// Component get the data from the Promise of Service
